@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR01",
+  "commit": "29e2cdd2b6d81119ab8ea7c875f4505ceaf29370",
+  "course_kit": {
+    "version": "v1-w09",
+    "archive_sha256": "8579e0afe96d76220735b6019cc38b1f3cac8c21e4aae8470785138a74a6c54a"
+  },
+  "commands": [
+    "source /opt/ros/jazzy/setup.bash",
+    "export ROS_DOMAIN_ID=45",
+    "ros2 run turtlesim turtlesim_node",
+    "ros2 run turtlesim turtle_teleop_key",
+    "ros2 node list --no-daemon --spin-time 2",
+    "ros2 topic list -t",
+    "ros2 node info /turtlesim",
+    "ros2 topic type /turtle1/pose",
+    "ros2 topic echo /turtle1/pose --once",
+    "ros2 topic hz /turtle1/pose",
+    "export ROS_DOMAIN_ID=63",
+    "timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once",
+    "export ROS_DOMAIN_ID=45",
+    "timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once"
+  ],
+  "tests": [
+    {
+      "name": "turtlesim_node launches",
+      "status": "passed"
+    },
+    {
+      "name": "turtle_teleop_key launches",
+      "status": "passed"
+    },
+    {
+      "name": "node list shows /turtlesim",
+      "status": "passed"
+    },
+    {
+      "name": "topic list shows /turtle1/pose",
+      "status": "passed"
+    },
+    {
+      "name": "topic type is turtlesim/msg/Pose",
+      "status": "passed"
+    },
+    {
+      "name": "topic echo returns pose",
+      "status": "passed"
+    },
+    {
+      "name": "topic hz measures ~62.5 Hz",
+      "status": "passed"
+    },
+    {
+      "name": "broken domain: pose not received (exit=124)",
+      "status": "passed"
+    },
+    {
+      "name": "fixed domain: pose received (exit=0)",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "teleop запущен с ROS_DOMAIN_ID=63, turtlesim с ROS_DOMAIN_ID=45. Команда timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once возвращает exit=124 (timeout), поза не приходит.",
+    "root_cause": "ROS_DOMAIN_ID определяет область обнаружения участников DDS. Ноды с разными ROS_DOMAIN_ID находятся в разных областях обнаружения и не могут обмениваться данными.",
+    "proof_after": "После запуска teleop с ROS_DOMAIN_ID=45 (тем же доменом, что и turtlesim), команда timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once возвращает exit=0 и выводит позу черепахи."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

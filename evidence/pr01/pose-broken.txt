@@ -1,0 +1,2 @@
+timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once
+exit=124
