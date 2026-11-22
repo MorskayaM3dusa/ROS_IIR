@@ -1,0 +1,24 @@
+# Результаты тестов функции compute_command — ПР03
+
+Команда запуска:
+```bash
+python3 -m pytest src/patrol/test -v
+```
+
+Итог:
+```
+collected 2 items
+
+src/patrol/test/test_patrol.py::TestComputeCommand::test_no_pose_returns_zero_command PASSED
+src/patrol/test/test_patrol.py::TestComputeCommand::test_with_pose_returns_movement_command PASSED
+
+2 passed in 0.02s
+```
+
+## Описание тестов
+
+1. **`test_no_pose_returns_zero_command`** — проверяет, что при `pose=None` функция `compute_command` возвращает нулевой `Twist` (все поля равны 0.0). Это соответствует поведению ноды до получения первой позы.
+
+2. **`test_with_pose_returns_movement_command`** — проверяет, что при наличии любого объекта позы функция возвращает команду с `linear.x = 0.5` и `angular.z = 0.3`. Это соответствует поведению ноды после получения первой позы от `/turtle1/pose`.
+
+Оба теста проходят. Чистая функция `compute_command` отделена от логики ROS-ноды, поэтому её можно тестировать без запуска `rclpy`.
