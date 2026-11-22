@@ -68,7 +68,8 @@ jobs:
         run: |
           source /opt/ros/jazzy/setup.bash
           source install/setup.bash
-          python3 -m pytest src/patrol/test -v -p no:launchtesting
+          export PYTHONPATH=/opt/ros/jazzy/lib/python3.12/site-packages:$PYTHONPATH
+          python3 -m pytest src/patrol/test -v -p no:launchtesting -p no:launchtesting
       - name: Check PR03 evidence
         shell: bash
         run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
