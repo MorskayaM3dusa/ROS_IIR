@@ -53,6 +53,7 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/jazzy/setup.bash
+          source install/setup.bash
           test -f "$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch/sim.launch.py"
       - name: Check PR02 evidence
         shell: bash
@@ -66,11 +67,13 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/jazzy/setup.bash
+          source install/setup.bash
           test -f "$(ros2 pkg prefix patrol)/lib/patrol/patrol"
       - name: Run patrol tests (PR03)
         shell: bash
         run: |
           source /opt/ros/jazzy/setup.bash
+          source install/setup.bash
           python3 -m pytest src/patrol/test -v
       - name: Check PR03 evidence
         shell: bash
