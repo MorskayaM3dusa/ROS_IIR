@@ -76,14 +76,31 @@ timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once
 ├── .github/
 │   └── workflows/
 │       └── ci.yml        # CI workflow
+├── src/
+│   └── turtle_bringup/   # ROS-пакет для ПР02
+│       ├── package.xml
+│       ├── setup.py
+│       ├── setup.cfg
+│       ├── resource/
+│       │   └── turtle_bringup
+│       ├── turtle_bringup/
+│       │   └── __init__.py
+│       └── launch/
+│           └── sim.launch.py
 ├── evidence/
-│   └── pr01/             # Результаты ПР01
-│       ├── doctor.txt
-│       ├── graph.md
-│       ├── environment.json
-│       ├── report.json
-│       ├── pose-broken.txt
-│       └── pose-fixed.txt
+│   ├── pr01/             # Результаты ПР01
+│   │   ├── doctor.txt
+│   │   ├── graph.md
+│   │   ├── environment.json
+│   │   ├── report.json
+│   │   ├── pose-broken.txt
+│   │   └── pose-fixed.txt
+│   └── pr02/             # Результаты ПР02
+│       ├── build-empty.txt
+│       ├── build.txt
+│       ├── commands.md
+│       ├── types.md
+│       └── report.json
 ├── AI_USAGE.md           # Декларация использования ИИ
 └── README.md
 ```
@@ -92,4 +109,31 @@ timeout 5s ros2 topic echo /turtle1/pose turtlesim/msg/Pose --once
 
 - Граф ROS 2 описан в `evidence/pr01/graph.md`
 - Информация об окружении в `evidence/pr01/environment.json`
-- Отчёт в `evidence/pr01/report.json`
+- Отчёт ПР01 в `evidence/pr01/report.json`
+- ROS-пакет `turtle_bringup` в `src/turtle_bringup/`
+- Логи сборки ПР02 в `evidence/pr02/build-empty.txt` и `evidence/pr02/build.txt`
+- Разбор команд и сбоя в `evidence/pr02/commands.md`
+- Типы сообщений в `evidence/pr02/types.md`
+- Отчёт ПР02 в `evidence/pr02/report.json`
+
+## Запуск ПР02 (turtle_bringup)
+
+```bash
+source /opt/ros/jazzy/setup.bash
+cd "$(git rev-parse --show-toplevel)"
+source install/setup.bash
+export ROS_DOMAIN_ID=45
+
+# Сборка пакета
+colcon build --symlink-install --packages-select turtle_bringup
+
+# Запуск turtlesim через launch
+ros2 launch turtle_bringup sim.launch.py
+
+# В другом терминале — проверка графа
+ros2 node list --no-daemon --spin-time 2
+
+# Публикация команды движения
+ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist \
+  '{linear: {x: 1.0}, angular: {z: 0.5}}'
+```
