@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR02",
+  "commit": "78b041d0fffb3e03f5074c446fa4998cf641f293",
+  "course_kit": {
+    "version": "v1-w11",
+    "archive_sha256": "0b67bfd41448549d21122124b7f49211ba2cd068cc56751871f319eadeb9d0ab"
+  },
+  "commands": [
+    "source /opt/ros/jazzy/setup.bash",
+    "cd \"$(git rev-parse --show-toplevel)\"",
+    "mkdir -p src evidence/pr02",
+    "cd src",
+    "ros2 pkg create --build-type ament_python --license Apache-2.0 turtle_bringup --dependencies launch launch_ros turtlesim",
+    "cd ..",
+    "set -o pipefail",
+    "colcon build --symlink-install --packages-select turtle_bringup 2>&1 | tee evidence/pr02/build-empty.txt",
+    "source install/setup.bash",
+    "ros2 pkg prefix turtle_bringup",
+    "ros2 launch turtle_bringup sim.launch.py",
+    "ros2 node list --no-daemon --spin-time 2",
+    "ros2 interface show geometry_msgs/msg/Twist",
+    "ros2 topic type /turtle1/pose",
+    "ros2 topic echo /turtle1/pose --once",
+    "ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'",
+    "ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'",
+    "ros2 topic info /cmd_vel --verbose",
+    "ros2 topic info /turtle1/cmd_vel --verbose"
+  ],
+  "tests": [
+    {
+      "name": "turtle_bringup package builds",
+      "status": "passed"
+    },
+    {
+      "name": "sim.launch.py installed in share/turtle_bringup/launch",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 launch turtle_bringup sim.launch.py starts turtlesim",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 node list shows /turtlesim",
+      "status": "passed"
+    },
+    {
+      "name": "cmd_vel published to wrong topic: turtle does not move",
+      "status": "passed"
+    },
+    {
+      "name": "cmd_vel published to /turtle1/cmd_vel: turtle moves",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "Команда ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /cmd_vel geometry_msgs/msg/Twist ... публикует в топик /cmd_vel, но подписчик /turtlesim слушает /turtle1/cmd_vel. Черепаха не движется.",
+    "root_cause": "ROS 2 определяет связь издатель-подписчик по полному имени топика, а не только по типу сообщения. /cmd_vel и /turtle1/cmd_vel — разные топики.",
+    "proof_after": "После исправления имени на /turtle1/cmd_vel команда доставляется подписчику, черепаха начинает двигаться."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}
