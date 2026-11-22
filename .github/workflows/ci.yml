@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1.tar.gz
-  COURSE_KIT_SHA256: 8579e0afe96d76220735b6019cc38b1f3cac8c21e4aae8470785138a74a6c54a
+  COURSE_KIT_SHA256: 0b67bfd41448549d21122124b7f49211ba2cd068cc56751871f319eadeb9d0ab
 
 jobs:
   test:
