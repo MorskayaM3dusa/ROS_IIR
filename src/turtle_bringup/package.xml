@@ -3,7 +3,7 @@
   <name>turtle_bringup</name>
   <version>0.1.0</version>
   <description>turtlesim bringup package for PR02</description>
-  <maintainer email="student@example.com">Student</maintainer>
+  <maintainer email="tsaregorodtsev.roma05@gmail.com">Student</maintainer>
   <license>Apache-2.0</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <depend>launch</depend>
