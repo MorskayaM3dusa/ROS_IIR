@@ -1,0 +1,48 @@
+# Результаты тестов функции compute_command и валидации параметров — ПР04
+
+Команда запуска:
+```bash
+python3 -m pytest src/patrol/test -v
+```
+
+Итог:
+```
+collected 14 items
+
+src/patrol/test/test_parameters.py::TestComputeCommand::test_compute_command_does_not_validate_ranges PASSED                       [  7%]
+src/patrol/test/test_parameters.py::TestComputeCommand::test_custom_speed_and_turn PASSED                                          [ 14%]
+src/patrol/test/test_parameters.py::TestComputeCommand::test_no_pose_returns_zero_command PASSED                                   [ 21%]
+src/patrol/test/test_parameters.py::TestComputeCommand::test_with_pose_uses_default_speed_and_turn PASSED                          [ 28%]
+src/patrol/test/test_parameters.py::TestComputeCommand::test_zero_speed_is_valid PASSED                                            [ 35%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_linear_speed_invalid PASSED                                      [ 42%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_linear_speed_valid_range PASSED                                  [ 50%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_publish_hz_invalid PASSED                                        [ 57%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_publish_hz_valid_range PASSED                                    [ 64%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_turn_rate_invalid PASSED                                         [ 71%]
+src/patrol/test/test_parameters.py::TestParameterValidation::test_turn_rate_valid_range PASSED                                     [ 78%]
+src/patrol/test/test_parameters.py::TestTwistStructure::test_twist_fields_are_floats PASSED                                        [ 85%]
+src/patrol/test/test_patrol.py::TestComputeCommand::test_no_pose_returns_zero_command PASSED                                       [ 92%]
+src/patrol/test/test_patrol.py::TestComputeCommand::test_with_pose_returns_movement_command PASSED                                 [100%]
+```
+
+## Описание тестов
+
+### TestComputeCommand (чистая функция)
+1. `test_no_pose_returns_zero_command` — при `pose=None` возвращается нулевой Twist.
+2. `test_with_pose_uses_default_speed_and_turn` — значения по умолчанию: `linear_speed=0.5`, `turn_rate=0.3`.
+3. `test_custom_speed_and_turn` — явные значения скорости и поворота применяются к команде.
+4. `test_zero_speed_is_valid` — скорость 0 допустима.
+5. `test_compute_command_does_not_validate_ranges` — чистая функция не валидирует диапазоны (валидация в параметрах ноды).
+
+### TestParameterValidation (аналог валидации параметров ноды)
+6. `test_linear_speed_valid_range` — 0.0, 0.5, 1.0 проходят проверку [0, 1].
+7. `test_linear_speed_invalid` — отрицательные, >1, NaN, Inf отвергаются.
+8. `test_turn_rate_valid_range` — -1.0, -0.5, 0.0, 0.3, 1.0 проходят проверку [-1, 1].
+9. `test_turn_rate_invalid` — за пределами [-1, 1], NaN, Inf отвергаются.
+10. `test_publish_hz_valid_range` — 1.0, 5.0, 10.0, 30.0 проходят проверку [1, 30].
+11. `test_publish_hz_invalid` — 0, отрицательные, >30, NaN, Inf отвергаются.
+
+### TestTwistStructure
+12. `test_twist_fields_are_floats` — все поля Twist — float и равны 0.0 для нулевой команды.
+
+Все тесты проходят. Чистая функция `compute_command` отделена от ROS-ноды, поэтому тестируется без `rclpy`.
