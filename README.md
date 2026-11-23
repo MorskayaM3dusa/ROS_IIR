@@ -1,4 +1,4 @@
-# Практические работы ПР01 и ПР02 по курсу «Робототехника»
+# Практические работы по курсу «Робототехника»
 
 ## Окружение
 
@@ -159,6 +159,52 @@ python3 -m pytest src/patrol/test -v
 - Результаты тестов: `evidence/pr03/tests.txt`
 - Отчёт в `evidence/pr03/report.json`
 
+---
+
+## ПР04. Параметризуем движение
+
+### Описание
+
+Модификация пакета `patrol` из ПР03: добавление параметров `linear_speed`, `turn_rate`, `publish_hz` с валидацией входных значений, динамическим пересозданием таймера при изменении частоты, защитой от недопустимых значений (0, отрицательные, NaN, вне диапазона).
+
+### Запуск ПР04
+
+```bash
+source /opt/ros/jazzy/setup.bash
+cd "$(git rev-parse --show-toplevel)"
+source install/setup.bash
+export ROS_DOMAIN_ID=45
+
+# Сборка пакета
+colcon build --symlink-install --packages-select patrol
+
+# Запуск ноды (в одном терминале, вместе с turtlesim)
+ros2 run patrol patrol
+
+# Просмотр параметров
+ros2 param list --node /patrol
+
+# Допустимая смена частоты
+ros2 param set /patrol publish_hz 5.0
+
+# Недопустимая частота (должна быть отклонена)
+ros2 param set /patrol publish_hz 0.0
+
+# Проверка сохранения старого значения
+ros2 param get /patrol publish_hz
+
+# Тесты
+python3 -m pytest src/patrol/test -v
+```
+
+### Результаты ПР04
+
+- Модифицирован `src/patrol/patrol/patrol.py` — параметры с валидацией и пересозданием таймера
+- Добавлены тесты: `src/patrol/test/test_parameters.py`
+- Описание параметров и команд: `evidence/pr04/parameters.md`
+- Результаты тестов: `evidence/pr04/tests.txt`
+- Отчёт в `evidence/pr04/report.json`
+
 ### Полная структура репозитория
 
 ```
@@ -186,6 +232,10 @@ python3 -m pytest src/patrol/test -v
 │   ├── pr02/             # Результаты ПР02
 │   └── pr03/             # Результаты ПР03
 │       ├── demo.md
+│       ├── tests.txt
+│       └── report.json
+│   └── pr04/             # Результаты ПР04
+│       ├── parameters.md
 │       ├── tests.txt
 │       └── report.json
 ├── AI_USAGE.md           # Декларация использования ИИ
