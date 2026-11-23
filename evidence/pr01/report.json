@@ -3,8 +3,8 @@
   "practice_id": "PR01",
   "commit": "29e2cdd2b6d81119ab8ea7c875f4505ceaf29370",
   "course_kit": {
-    "version": "v1-w11",
-    "archive_sha256": "0b67bfd41448549d21122124b7f49211ba2cd068cc56751871f319eadeb9d0ab"
+    "version": "v1-w12",
+    "archive_sha256": "0c0f811b1592063a688826e1e90176927bb48c5f0aefbf91a479905820e9b620"
   },
   "commands": [
     "source /opt/ros/jazzy/setup.bash",
