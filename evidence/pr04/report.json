@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR04",
+  "commit": "efb03d45142853ae916682a1e5377b2ae1944338",
+  "course_kit": {
+    "version": "v1-w11",
+    "archive_sha256": "0b67bfd41448549d21122124b7f49211ba2cd068cc56751871f319eadeb9d0ab"
+  },
+  "commands": [
+    "ros2 topic type /turtle1/pose",
+    "ros2 param list --node /patrol",
+    "ros2 param get /patrol linear_speed",
+    "ros2 param get /patrol turn_rate",
+    "ros2 param get /patrol publish_hz",
+    "ros2 param set /patrol publish_hz 5.0",
+    "ros2 param set /patrol publish_hz 0.0",
+    "ros2 param set /patrol publish_hz -5.0",
+    "ros2 param set /patrol linear_speed 0.8",
+    "ros2 param set /patrol linear_speed 1.5",
+    "ros2 param set /patrol turn_rate -0.7",
+    "ros2 param set /patrol turn_rate 2.0",
+    "ros2 service call /clear std_srvs/srv/Empty",
+    "ros2 action list -t",
+    "python3 -m pytest src/patrol/test -v -p no:launchtesting"
+  ],
+  "tests": [
+    {
+      "name": "patrol package builds with parameters",
+      "status": "passed"
+    },
+    {
+      "name": "pytest unit tests for compute_command and parameter validation",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 param set publish_hz 5.0 accepted, timer recreated",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 param set publish_hz 0.0 rejected, old value preserved",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 param set publish_hz -5.0 rejected",
+      "status": "passed"
+    },
+    {
+      "name": "ros2 param set publish_hz nan rejected",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "При временном отключении проверки publish_hz и передаче значения 0.0 нода создаёт таймер с периодом 1/0, что приводит к деления на ноль или бесконечно частым срабатываниям таймера, разрушая активное состояние ноды.",
+    "root_cause": "Отсутствие валидации входа параметра publish_hz перед изменением периода таймера. Значение 0 не проходит проверку диапазона [1, 30] и должно быть отклонено до любого изменения состояния.",
+    "proof_after": "После восстановления проверки publish_hz команда `ros2 param set /patrol publish_hz 0.0` возвращает ошибку, старое значение (5.0) сохраняется, таймер не пересоздаётся, нода продолжает работать со старой частотой."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

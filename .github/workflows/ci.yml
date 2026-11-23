@@ -57,6 +57,7 @@ jobs:
         run: |
           source /opt/ros/jazzy/setup.bash
           colcon build --symlink-install --packages-select patrol
+          source install/setup.bash
       - name: Verify patrol node installed (PR03)
         shell: bash
         run: |
@@ -69,7 +70,10 @@ jobs:
           source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           export PYTHONPATH=/opt/ros/jazzy/lib/python3.12/site-packages:$PYTHONPATH
-          python3 -m pytest src/patrol/test -v -p no:launchtesting -p no:launchtesting
+          python3 -m pytest src/patrol/test -v -p no:launchtesting
       - name: Check PR03 evidence
         shell: bash
         run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
+      - name: Check PR04 evidence
+        shell: bash
+        run: python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
