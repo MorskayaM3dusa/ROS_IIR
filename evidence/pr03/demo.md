@@ -48,7 +48,38 @@ ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel
 ```bash
 ros2 topic hz /turtle1/cmd_vel
 ```
-Ожидается около 10 Гц (период таймера 0.1 с). Измерение ведётся не менее 10 секунд, затем `Ctrl+C`.
+```
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00015s window: 11
+average rate: 9.999
+        min: 0.100s max: 0.100s std dev: 0.00014s window: 22
+average rate: 10.001
+        min: 0.100s max: 0.100s std dev: 0.00014s window: 33
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00016s window: 43
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00015s window: 54
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00015s window: 64
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00015s window: 75
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00015s window: 86
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00014s window: 96
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00014s window: 107
+average rate: 10.000
+        min: 0.100s max: 0.100s std dev: 0.00014s window: 118
+average rate: 10.000
+        min: 0.100s max: 0.101s std dev: 0.00015s window: 129
+average rate: 10.000
+        min: 0.100s max: 0.101s std dev: 0.00015s window: 140
+average rate: 10.000
+        min: 0.100s max: 0.101s std dev: 0.00014s window: 150
+average rate: 8.108
+        min: 0.100s max: 3.625s std dev: 0.28588s window: 151
+```
 
 ## Остановка и поведение turtlesim
 
